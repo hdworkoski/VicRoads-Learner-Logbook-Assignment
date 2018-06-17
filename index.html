@@ -1,0 +1,410 @@
+<!DOCTYPE html> 
+<html>
+<head>
+<meta charset="utf-8">
+<title>Logbook App</title>
+
+<link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.4.5.min.css">
+<link rel="stylesheet" type="text/css" href="grid/jsgrid.min.css">
+<link rel="stylesheet" type="text/css" href="grid/jsgrid-theme.min.css">
+
+<!--This style forces the orientation to landscape because portrait orientation is too small for this app-->
+<!-- it is commented out for now because it is difficut to use app in a browser like this-->
+<!--<link rel='stylesheet' type='text/css' href='css/landscape.css'>-->
+<script src="jQuery/jquery-1.11.2.min.js"></script>
+<script src="jQuery/jquery.mobile-1.4.5.min.js"></script>
+<script src="grid/jsgrid.min.js"></script>
+<script src="javascript/javascript.js"></script>
+<script src="javascript/javascriptDB.js"></script>
+<script src="circular-progress/circular-progress.js"></script>
+<style>
+.center
+{
+	text-align:center;
+}
+</style>
+</head>
+ 
+<body id="container"> 
+
+<!--main menu page-->
+<div data-role="page" id="page" data-theme="a">
+    <div data-role="header">
+        <h1>Learner Driver Logbook</h1>
+    </div>
+    <div data-role="main" class="ui-content, center">	
+    	<img src="images/VicRoads-Logo-Large.png" alt="Vicroads Logo" height="200" width="400">
+        <ul data-role="listview">
+            <li id="found1"><a href="#page2">New Logbook Entry</a></li>
+            <li id="found2"><a href="#page3">Enter New Supervising Driver</a></li>
+            <li id="found3"><a href="#page4">Enter New Car</a></li>
+            <li id="found4"><a href="#page5">View Progress</a></li>
+            <li id="enter"><a href="#page6">Enter Learner Driver Information</a></li>
+            <li id="edit" onClick='loadLearnerRecord();'><a href="#page6">Edit Learner Driver Information</a></li>
+        </ul>		
+   </div>
+   <div data-role="footer">
+        <h4>Vicroads</h4>
+   </div>
+</div>
+    
+<!--logbook entry page-->
+<div data-role="page" id="page2">
+    <div data-role="header" data-add-back-btn="true">
+        <h1>Logbook Entry</h1>
+    </div>
+    <div data-role="main" class="ui-content">	
+         <div data-role="tabs" id="tabs">
+         	<div data-role="navbar">
+         		<ul>
+         			<li><a href="#start" data-ajax="false">Start Drive</a></li>
+         			<li><a href="#end" data-ajax="false">End Drive</a></li>
+         			<li><a href="#conditions" data-ajax="false">Drive Conditions</a></li>
+         		</ul>
+         	</div>
+           <div id="start" class="ui-body-d ui-content">
+         	<h1>Start Drive</h1>
+            
+         	<div data-role="fieldcontain">
+         	  <label for="selCar" class="select">Select Car:</label>
+         	  <select name="selCar" id="selCar">
+       	    </select>
+       	  	</div>
+            
+         	<div data-role="fieldcontain">
+         	  <label for="selSup" class="select">Select Supervising Driver:</label>
+         	  <select name="selSup" id="selSup">
+       	    </select>
+       	  </div>
+          
+          <div data-role="fieldcontain">
+         	  <label for="nmbStartOd">Starting Odometer:</label>
+         	  <input type="number" name="nmbStartOd" id="nmbStartOd"/>
+       	  </div>
+          
+          <div data-role="fieldcontain">
+            <label for="dtStart">Start Date:</label>
+            <input type="date" name="dtStart" id="dtStart"/>
+          </div>
+           
+           <div data-role="fieldcontain">
+            <label for="tmStart">Start Time:</label>
+            <input type="time" name="tmStart" id="tmStart"/>
+          </div>
+           </div>
+           
+           <div id="end" class="ui-body-d ui-content">
+         	<h1>End Drive</h1>
+            
+            <div data-role="fieldcontain">
+            <label for="dtFinish">Finish Date:</label>
+            <input type="date" name="dtFinish" id="dtFinish"/>
+          </div>
+          
+          <div data-role="fieldcontain">
+            <label for="tmFinish">Finish Time:</label>
+            <input type="time" name="tmFinish" id="tmFinish"/>
+          </div>
+          
+          <div data-role="fieldcontain">
+         	  <label for="nmbEndOd">Finish Odometer:</label>
+         	  <input type="number" name="nmbEndOd" id="nmbEndOd"/>
+       	  </div>
+          
+          <div data-role="fieldcontain">
+         	  <label for="nmbNightTime">Hours at Night:</label>
+         	  <input type="number" name="nmbNightTime" id="nmbNightTime"/>
+       	  </div>
+          
+          <div data-role="fieldcontain">
+         	  <label for="txtSig">Signature of Supervising Driver:</label>
+         	  <input type="text" name="txtSig" id="txtSig"/>
+       	  </div>
+           </div>
+           
+           <div id="conditions" class="ui-body-d ui-content">
+         	<h1>Drive Conditions</h1>
+            <div data-role="collapsibleset">
+            	<div data-role="collapsible">
+                	<h2>Parking</h2>
+                	<div data-role="fieldcontain">
+                	  <fieldset data-role="controlgroup" data-type="horizontal">
+                	    <input type="radio" name="radParking" id="radParkTrue" value="True"/>
+                	    <label for="radParkTrue">Yes</label>
+                	    <input type="radio" name="radParking" id="radParkFalse" value="False"/>
+                	    <label for="radParkFalse">No</label>
+              	    </fieldset>
+              	  </div>
+                </div>
+                <div data-role="collapsible">
+                	<h2>Traffic</h2>
+                	<div data-role="fieldcontain">
+                	  <fieldset data-role="controlgroup">
+                	    <input type="checkbox" name="chkTraffic" id="chkTrafficLight" class="custom" value="Light" />
+                	    <label for="chkTrafficLight">Light</label>
+                	    <input type="checkbox" name="chkTraffic" id="chkTrafficMod" class="custom" value="Moderate" />
+                	    <label for="chkTrafficMod">Moderate</label>
+                	    <input type="checkbox" name="chkTraffic" id="chkTrafficHeavy" class="custom" value="Heavy" />
+                	    <label for="chkTrafficHeavy">Heavy</label>
+              	    </fieldset>
+              	  </div>   
+                </div>
+                <div data-role="collapsible">
+                	<h2>Weather</h2>
+                	<div data-role="fieldcontain">
+                	  <fieldset data-role="controlgroup" data-type="horizontal">
+                	    <input type="radio" name="radWeather" id="radDry" value="Dry"/>
+                	    <label for="radDry">Dry</label>
+                	    <input type="radio" name="radWeather" id="radWet" value="Wet"/>
+                	    <label for="radWet">Wet</label>
+              	    </fieldset>
+              	  </div>
+                </div>
+                <div data-role="collapsible">
+                	<h2>Road Type</h2>
+                	<div data-role="fieldcontain">
+                	  <fieldset data-role="controlgroup">
+                	    <input type="checkbox" name="chkRoad" id="chkLocal" class="custom" value="Local Road"/>
+                	    <label for="chkLocal">Local Road</label>
+                	    <input type="checkbox" name="chkRoad" id="chkMain" class="custom" value="Main Road"/>
+                	    <label for="chkMain">Main Road</label>
+                	    <input type="checkbox" name="chkRoad" id="chkCity" class="custom" value="Inner City"/>
+                	    <label for="chkCity">Inner City</label>
+                	    <input type="checkbox" name="chkRoad" id="chkFwy" class="custom" value="Freeway"/>
+                	    <label for="chkFwy">Freeway</label>
+                	    <input type="checkbox" name="chkRoad" id="chkRrlhwy" class="custom" value="Rural Highway"/>
+                	    <label for="chkRrlhwy">Rural Highway</label>
+                	    <input type="checkbox" name="chkRoad" id="chkRrlother" class="custom" value="Other Rural"/>
+                	    <label for="chkRrlother">Other Rural</label>
+                	    <input type="checkbox" name="chkRoad" id="chkGravel" class="custom" value="Gravel"/>
+                	    <label for="chkGravel">Gravel</label>
+              	    </fieldset>
+              	  </div>
+                </div>
+                <div data-role="collapsible">
+                	<h2>Light</h2>
+                	<div data-role="fieldcontain">
+                	  <fieldset data-role="controlgroup">
+                	    <input type="checkbox" name="chkLight" id="chkDay" class="custom" value="Day"/>
+                	    <label for="chkDay">Day</label>
+                	    <input type="checkbox" name="chkLight" id="chkDD" class="custom" value="Dawn/Dusk"/>
+                	    <label for="chkDD">Dawn/Dusk</label>
+                	    <input type="checkbox" name="chkLight" id="chkNight" class="custom" value="Night"/>
+                	    <label for="chkNight">Night</label>
+              	    </fieldset>
+              	  </div>
+                </div>
+                <button id="submitLog" data-inline="true">Submit Logbook Entry</button>
+            </div>
+           </div>
+        </div>	
+    </div>
+    <div data-role="footer"> 
+        <h4>Vicroads</h4>    
+    </div>
+</div>
+
+<!--new supervising driver page-->
+<div data-role="page" id="page3">
+    <div data-role="header" data-add-back-btn="true">
+         <h1>Enter New Supervising Driver</h1>
+    </div>
+    <div data-role="main" class="ui-content, center">	
+         
+      <div data-role="fieldcontain">
+        <label for="txtSFName">First Name:</label>
+        <input type="text" name="txtSFName" id="txtSFName"/>
+      </div>
+      
+      <div data-role="fieldcontain">
+        <label for="txtSLName">Last Name:</label>
+        <input type="text" name="txtSLName" id="txtSLName"/>
+      </div>
+      
+      <div data-role="fieldcontain">
+      	<label for="txtLicense">License Number:</label>
+        <input type="text" name="txtLicense" id="txtLicense"/>
+      </div>
+      
+      <div data-role="fieldcontain">
+        <label for="nmbSPhone">Phone:</label>
+        <input type="number" name="nmbSPhone" id="nmbSPhone"/>
+      </div>
+      
+      <div data-role="fieldcontain">
+        <label for="dtSig">Date:</label>
+        <input type="date" name="dtSig" id="dtSig"/>
+      </div>
+      
+      <div data-role="fieldcontain">
+        <label for="txtSSig">Signature:</label>
+        <input type="text" name="txtSSig" id="txtSSig"/>
+      </div>
+      
+      <button id="saveSDriver" data-inline=true>Save Supervising Driver</button>
+         
+    </div>
+    <div data-role="footer">
+        <h4>Vicroads</h4>
+  	</div>
+</div>
+
+<!--new car page-->
+<div data-role="page" id="page4">
+    <div data-role="header" data-add-back-btn="true">
+          <h1>Enter New Car</h1>
+    </div>
+    
+    <div data-role="main" class="ui-content, center">
+    
+      <div data-role="fieldcontain">
+        <label for="txtCName">Name:</label>
+        <input type="text" name="txtCName" id="txtCName"/>
+      </div>
+    
+      <div data-role="fieldcontain">
+        <label for="txtRego">Registration Number:</label>
+        <input type="text" name="txtRego" id="txtRego"/>
+      </div>	
+      
+      <div data-role="fieldcontain">
+        <label for="txtMake">Make:</label>
+        <input type="text" name="txtMake" id="txtMake"/>
+      </div>
+      
+      <div data-role="fieldcontain">
+        <label for="txtModel">Model:</label>
+        <input type="text" name="txtModel" id="txtModel"/>
+      </div>
+      
+      <div data-role="fieldcontain">
+      <label for="radTrans">Transmission:</label>
+         <fieldset data-role="controlgroup" data-type="horizontal">
+            <input type="radio" name="radTrans" id="radMan" value="Manaul" checked="true"/>
+            <label for="radMan">Manual</label>
+            <input type="radio" name="radTrans" id="radAuto" value="Automatic"/>
+            <label for="radAuto">Automatic</label>
+         </fieldset>
+      </div>
+      
+      <div data-role="fieldcontain">
+        <label for="txtPower">Power:</label>
+        <input type="text" name="txtPower" id="txtPower"/>
+      </div>
+      
+      <button id="saveCar" data-inline="true">Save Car</button>
+      <br/><br/><p id="msgC"></p>
+         		
+    </div>
+    <div data-role="footer">
+        <h4>Vicroads</h4>
+  	</div>
+</div>
+
+<!--progress page-->
+<div data-role="page" id="page5">
+  <div data-role="header" data-add-back-btn="true">
+    <h1>Progress</h1>
+  </div>
+  <div data-role="content" class="center">
+  	<h2>Total Hours: <span id="totalHours"></span></h2>
+  	<div id="totalProgress"></div>
+    <h2>Night Hours: <span id="nightHours"></span></h2>
+    <div id="nightProgress"></div><br/><br/>
+	<ul data-role="listview">
+            <li><a href="#lbPage">View Logbook Entries</a></li>
+            <li><a href="#carPage">View Cars</a></li>
+            <li><a href="#driverPage">View Supervising Drivers</a></li>
+     </ul>
+  </div>
+  <div data-role="footer">
+    <h4>Vicroads</h4>
+  </div>
+</div>
+
+<!--view/edit logbook entries page-->
+<div data-role="page" id="lbPage">
+  <div data-role="header" data-add-back-btn="true">
+    <h1>Logbook Entries</h1>
+  </div>
+  <div data-role="content" class="center">
+  	<div id="jsGridLogbook"></div>
+  </div>
+  <div data-role="footer">
+    <h4>Vicroads</h4>
+  </div>
+</div>
+
+<!--view/edit cars page-->
+<div data-role="page" id="carPage">
+  <div data-role="header" data-add-back-btn="true">
+    <h1>Cars</h1>
+  </div>
+  <div data-role="content" class="center">
+  	<div id="jsGridCar"></div>
+  </div>
+  <div data-role="footer">
+    <h4>Vicroads</h4>
+  </div>
+</div>
+
+<!--view/edit supervising drivers page-->
+<div data-role="page" id="driverPage">
+  <div data-role="header" data-add-back-btn="true">
+    <h1>Supervising Drivers</h1>
+  </div>
+  <div data-role="content" class="center">
+  	<div id="jsGridDriver"></div>
+  </div>
+  <div data-role="footer">
+    <h4>Vicroads</h4>
+  </div>
+</div>
+
+<!--enter/edit learner driver information page-->
+<div data-role="page" id="page6">
+  <div data-role="header" data-add-back-btn="true">
+    <h1>Learner Driver Information</h1>
+  </div>
+  <div data-role="content" class="center">
+  
+    <div data-role="fieldcontain">
+      <label for="txtPermit">Permit Number:</label>
+      <input type="text" name="txtPermit" id="txtPermit"/>
+    </div>
+    
+    <div data-role="fieldcontain">
+      <label for="txtFirst">First Name:</label>
+      <input type="text" name="txtFirst" id="txtFirst"/>
+    </div>
+    
+    <div data-role="fieldcontain">
+      <label for="txtLast">Last Name:</label>
+      <input type="text" name="txtLast" id="txtLast"/>
+    </div>
+    
+    <div data-role="fieldcontain">
+      <label for="nmbPhone">Phone Number:</label>
+      <input type="number" name="nmbPhone" id="nmbPhone"/>
+    </div>
+    
+    <div data-role="fieldcontain">
+      <label for="dtBirth">Birthday:</label>
+      <input type="date" name="dtBirth" id="dtBirth"/>
+    </div>
+    
+    <div data-role="fieldcontain">
+      <label for="dtPermit">Permit Date:</label>
+      <input type="date" name="dtPermit" id="dtPermit"/>
+    </div>
+    
+    <button id="saveDriver" data-inline="true">Save Driver Info</button>
+    <br/><br/><p id="msgLD"></p>
+  </div>
+  <div data-role="footer">
+    <h4>Vicroads</h4>
+  </div>
+</div>
+
+</body>
+</html>
